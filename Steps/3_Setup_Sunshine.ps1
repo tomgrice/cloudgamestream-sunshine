@@ -28,8 +28,24 @@ Start-ScheduledTask -TaskName "StartSunshine" | Out-Null
 
 Start-Sleep -Seconds 2
 Write-Host "Startup task added successfully." -ForegroundColor Green
-<# Write-Host "Adding Start Menu shortcuts" -ForegroundColor Green
+Write-Host "Adding Desktop shortcuts" -ForegroundColor Green
 
+$TargetFile = "$SunshineDir\sunshine.exe"
+$ShortcutFile = "$env:Public\Desktop\Start Sunshine.lnk"
+$WScriptShell = New-Object -ComObject WScript.Shell
+$Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
+$Shortcut.TargetPath = $TargetFile
+$Shortcut.Save()
+
+$TargetFile = "$ENV:windir/explorer.exe"
+$ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
+$WScriptShell = New-Object -ComObject WScript.Shell
+$Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
+$Shortcut.TargetPath = $TargetFile
+$Shortcut.Arguments = "https://localhost:47990"
+$Shortcut.Save()
+
+<#
 $objShell = New-Object -ComObject WScript.Shell
 $explorerFile = "C:\Windows\explorer.exe"
 
