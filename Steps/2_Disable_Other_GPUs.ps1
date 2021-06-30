@@ -5,7 +5,7 @@ If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 Write-Host "Disabling HyperV Monitor and non-NVIDIA GPUs..."
-displayswitch.exe /internal
+displayswitch.exe /external
 Get-PnpDevice -Class "Display" -Status OK | where { $_.Name -notmatch "nvidia" } | Disable-PnpDevice -confirm:$false
 Start-Sleep -Seconds 2
 Write-Host "Disabled." -ForegroundColor Green
