@@ -1,4 +1,4 @@
-Param([Parameter(Mandatory=$false)] [Switch]$RebootSkip)
+ Param([Parameter(Mandatory=$false)] [Switch]$RebootSkip)
 
 If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     $Arguments = "& '" + $MyInvocation.mycommand.definition + "'"
@@ -12,8 +12,11 @@ Start-Transcript -Path "$PSScriptRoot\Log.txt"
 
 clear
 
-Write-HostCenter "Cloud based GameStream Preparation Tool"
-Write-HostCenter "by acceleration3"
+$WorkDir = "$PSScriptRoot\Bin"
+$SunshineDir = "$ENV:HOMEDRIVE\sunshine"
+
+Write-HostCenter "Sunshine GameStream Preparation Script"
+Write-HostCenter "based on work by acceleration3, forked by Tom Grice"
 Write-Host ""
 
 try {
@@ -28,7 +31,7 @@ try {
         Write-Host "Step 1 - Installing requirements" -ForegroundColor Yellow
         & $PSScriptRoot\Steps\1_Install_Requirements.ps1 -Main
     } else {
-	
+
         if(Get-ScheduledTask | Where-Object {$_.TaskName -like "GSSetup" }) {
             Unregister-ScheduledTask -TaskName "GSSetup" -Confirm:$false
         }
@@ -37,23 +40,31 @@ try {
     }
 
     Write-Host ""
-    Write-Host "Step 2 - Patching GeForce Experience" -ForegroundColor Yellow
-    & $PSScriptRoot\Steps\2_Patch_GFE.ps1
+    Write-Host "Step 2- Disabling Hyper-V Monitor and other GPUs" -ForegroundColor Yellow
+    & $PSScriptRoot\Steps\2_Disable_Other_GPUs.ps1
 
     Write-Host ""
-    Write-Host "Step 3 - Disabling Hyper-V Monitor and other GPUs" -ForegroundColor Yellow
-    & $PSScriptRoot\Steps\3_Disable_Other_GPUs.ps1
+    Write-Host "Step 3 - Setting up Sunshine" -ForegroundColor Yellow
+    & $PSScriptRoot\Steps\3_Setup_Sunshine.ps1
 
     Write-Host ""
     Write-Host "Step 4 - Applying fixes" -ForegroundColor Yellow
     & $PSScriptRoot\Steps\4_Apply_Fixes.ps1
 
     Write-Host ""
-    Write-Host "Done. You should now be able to use GameStream after you restart your machine." -ForegroundColor DarkGreen
+    Write-Host "Done. You should now be able to use Moonlight after you restart your machine." -ForegroundColor DarkGreen
+    Write-Host ""
+    Write-Host "Do not forget to make a note of your configuration panel login details." -ForegroundColor Yellow
+    Write-Host ""
+
+    $restart = (Read-Host "Would you like to clean up unneccesary files? (y/n)").ToLower();
+    if($restart -eq "y") {
+        & $PSScriptRoot\Steps\5_Cleanup.ps1
+    }
 
     $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower();
     if($restart -eq "y") {
-        Restart-Computer -Force 
+        Restart-Computer -Force
     }
 } catch {
     Write-Host $_.Exception -ForegroundColor Red
