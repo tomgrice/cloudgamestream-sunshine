@@ -94,6 +94,7 @@ if($InstallVideo) {
             New-ItemProperty -Path "HKLM:\SOFTWARE\NVIDIA Corporation\Global" -Name "vGamingMarketplace" -PropertyType "DWord" -Value "2"
             Write-Host "Acquiring NVIDIA vGaming activation certificate" -ForegroundColor Green
             Download-File "https://nvidia-gaming.s3.amazonaws.com/GridSwCert-Archive/GridSwCertWindows_2021_10_2.cert" "$ENV:PUBLIC\Documents\GridSwCert.txt" "NVIDIA vGaming Certificate"
+            displayswitch.exe /external
             Write-Host "NVIDIA vGaming GPU drivers installed. The script will now restart the machine." -ForegroundColor Green
             Start-Sleep -Seconds 3
             Restart-Computer -Force
