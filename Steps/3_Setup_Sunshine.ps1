@@ -28,7 +28,7 @@ Start-ScheduledTask -TaskName "StartSunshine" | Out-Null
 
 Start-Sleep -Seconds 2
 Write-Host "Startup task added successfully." -ForegroundColor Green
-Write-Host "Adding Start Menu shortcuts" -ForegroundColor Green
+<% Write-Host "Adding Start Menu shortcuts" -ForegroundColor Green
 
 $objShell = New-Object -ComObject WScript.Shell
 $explorerFile = "C:\Windows\explorer.exe"
@@ -59,7 +59,7 @@ $objShortcut = $objShell.CreateShortcut($exeShortcut)
 $objShortcut.IconLocation = "explorer.exe,12"
 $objShortcut.TargetPath = $cmdFile
 $objShortcut.Arguments = "/c start $exePath"
-$objShortcut.Save()
+$objShortcut.Save() %>
 
 
 

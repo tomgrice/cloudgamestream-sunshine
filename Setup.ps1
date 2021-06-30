@@ -37,12 +37,12 @@ try {
     }
 
     Write-Host ""
-    Write-Host "Step 2 - Patching GeForce Experience" -ForegroundColor Yellow
-    & $PSScriptRoot\Steps\2_Patch_GFE.ps1
+    Write-Host "Step 2- Disabling Hyper-V Monitor and other GPUs" -ForegroundColor Yellow
+    & $PSScriptRoot\Steps\2_Disable_Other_GPUs.ps1
 
     Write-Host ""
-    Write-Host "Step 3 - Disabling Hyper-V Monitor and other GPUs" -ForegroundColor Yellow
-    & $PSScriptRoot\Steps\3_Disable_Other_GPUs.ps1
+    Write-Host "Step 3 - Setting up Sunshine" -ForegroundColor Yellow
+    & $PSScriptRoot\Steps\3_Setup_Sunshine.ps1
 
     Write-Host ""
     Write-Host "Step 4 - Applying fixes" -ForegroundColor Yellow

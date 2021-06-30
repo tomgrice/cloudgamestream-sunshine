@@ -85,7 +85,8 @@ if($InstallVideo) {
         Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "GSSetup" -Description "GSSetup" | Out-Null
     }
     Expand-Archive -Path "$WorkDir\Drivers.zip" -DestinationPath "$WorkDir\Drivers"
-    $InstallPath = Resolve-Path "$WorkDir\Drivers\*server2019_64bit_international.exe"
+    $InstallPath = Resolve-Path "$WorkDir\Drivers\Windows\*server2019_64bit_international.exe"
+    Write-Host "Installing NVIDIA vGaming drivers. This may take a while..." -ForegroundColor Green
     $ExitCode = (Start-Process -FilePath "$InstallPath" -ArgumentList "/s","/clean" -NoNewWindow -Wait -PassThru).ExitCode
     if($ExitCode -eq 0) {
         if($Main) {
