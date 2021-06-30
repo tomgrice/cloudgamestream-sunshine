@@ -12,8 +12,8 @@ Start-Transcript -Path "$PSScriptRoot\Log.txt"
 
 clear
 
-Write-HostCenter "Cloud based GameStream Preparation Tool"
-Write-HostCenter "by acceleration3"
+Write-HostCenter "Apollo GameStream Preparation Script"
+Write-HostCenter "based on work by acceleration3, forked by Thomas Grice"
 Write-Host ""
 
 try {
@@ -28,7 +28,7 @@ try {
         Write-Host "Step 1 - Installing requirements" -ForegroundColor Yellow
         & $PSScriptRoot\Steps\1_Install_Requirements.ps1 -Main
     } else {
-	
+
         if(Get-ScheduledTask | Where-Object {$_.TaskName -like "GSSetup" }) {
             Unregister-ScheduledTask -TaskName "GSSetup" -Confirm:$false
         }
@@ -53,7 +53,7 @@ try {
 
     $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower();
     if($restart -eq "y") {
-        Restart-Computer -Force 
+        Restart-Computer -Force
     }
 } catch {
     Write-Host $_.Exception -ForegroundColor Red
