@@ -40,7 +40,7 @@ if($InstallGamepad) { Download-File "https://github.com/ViGEm/ViGEmBus/releases/
 
 Write-Host "Extracting Sunshine v0.7.7..."
 
-Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$SunshineDir\sunshine" -Force
+Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$SunshineDir" -Force
 
 # Below to be updated with AIO redist install
 Write-Host "Installing Visual C++ Redist 2015-19 x86..."
