@@ -1,4 +1,4 @@
-Param([Parameter(Mandatory=$false)] [Switch]$RebootSkip)
+ Param([Parameter(Mandatory=$false)] [Switch]$RebootSkip)
 
 If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     $Arguments = "& '" + $MyInvocation.mycommand.definition + "'"

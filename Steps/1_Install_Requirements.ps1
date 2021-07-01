@@ -7,6 +7,7 @@ If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 $WorkDir = "$PSScriptRoot\..\Bin"
+$SunshineDir = "$ENV:ProgramData\sunshine"
 
 Function Download-File([string]$Url, [string]$Path, [string]$Name) {
     try {
@@ -37,10 +38,9 @@ if($InstallVideo) {
 }
 if($InstallGamepad) { Download-File "https://github.com/ViGEm/ViGEmBus/releases/download/setup-v1.16.116/ViGEmBus_Setup_1.16.116.exe" "$WorkDir\ViGEmBus.exe" "ViGEmBus v1.16.116" }
 
-# Replace below with Apollo/sunshine install
 Write-Host "Extracting Sunshine v0.7.7..."
 
-Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$ENV:HOMEDRIVE\sunshine" -Force
+Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$SunshineDir\sunshine" -Force
 
 # Below to be updated with AIO redist install
 Write-Host "Installing Visual C++ Redist 2015-19 x86..."
