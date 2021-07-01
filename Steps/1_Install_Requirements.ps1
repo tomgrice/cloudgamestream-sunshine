@@ -23,6 +23,7 @@ Import-Module BitsTransfer
 
 $InstallAudio = (Read-Host "You need to have an audio interface installed for GameStream to work. Install VBCABLE? (y/n)").ToLower() -eq "y"
 $InstallVideo = (Read-Host "You also need the NVIDIA vGaming Drivers installed. Installing will reboot your machine. Install the tested and recommended ones? (y/n)").ToLower() -eq "y"
+$InstallGamepad = (Read-Host "Would you like to install ViGEmBus for gamepad and controller support? (y/n)").ToLower() -eq "y"
 
 Download-File "https://github.com/loki-47-6F-64/sunshine/releases/download/v0.7.7/Sunshine-Windows.zip" "$WorkDir\Sunshine-Windows.zip" "Sunshine Moonlight Host v0.7.7"
 Download-File "https://aka.ms/vs/16/release/vc_redist.x86.exe" "$WorkDir\redist_x86.exe" "Visual C++ Redist 2015-19 x86"
@@ -34,6 +35,7 @@ if($InstallVideo) {
     $VideoDriverURL = "https://nvidia-gaming.s3.amazonaws.com/" + $xmlVideoDriverS3.ListBucketResult.Contents.Key
     Download-File "$VideoDriverURL" "$WorkDir\Drivers.zip" "NVIDIA vGaming Drivers"
 }
+if($InstallGamepad) { Download-File "https://github.com/ViGEm/ViGEmBus/releases/download/setup-v1.16.116/ViGEmBus_Setup_1.16.116.exe" "$WorkDir\ViGEmBus.exe" "ViGEmBus v1.16.116" }
 
 # Replace below with Apollo/sunshine install
 Write-Host "Extracting Sunshine v0.7.7..."
@@ -73,6 +75,11 @@ if($InstallAudio) {
         New-ItemProperty "hklm:\SYSTEM\CurrentControlSet\Control" -Name "ServicesPipeTimeout" -Value 600000 -PropertyType "DWord" | Out-Null
         Set-Service -Name Audiosrv -StartupType Automatic | Out-Null
     }
+}
+
+if($InstallGamepad) {
+    Write-Host "Installing ViGEmBus..."
+    Start-Process -FilePath "$WorkDir\ViGEmBus.exe" -ArgumentList "/qn" -NoNewWindow -Wait
 }
 
 if($InstallVideo) {

@@ -13,8 +13,6 @@ if($osType.ProductType -eq 3) {
     Install-WindowsFeature -Name Wireless-Networking | Out-Null
 }
 
-<#
-
 Write-Host "Applying resolution fix scheduled task..."
 if (!(Test-Path -Path "C:\ResFix")) {
     New-Item -Path C:\ResFix -ItemType Directory | Out-Null
@@ -33,5 +31,3 @@ Start-ScheduledTask -TaskName "SetEDID" | Out-Null
 
 Start-Sleep -Seconds 2
 Write-Host "Resolution fix applied." -ForegroundColor Green
-
-#>

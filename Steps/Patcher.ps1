@@ -1,4 +1,4 @@
-Param([Parameter(Mandatory=$true)] [string]$DeviceID, [Parameter(Mandatory=$true)] [string]$TargetFile)
+aram([Parameter(Mandatory=$true)] [string]$DeviceID, [Parameter(Mandatory=$true)] [string]$TargetFile)
 "Device ID: " + $DeviceID
 "Target File: " + $TargetFile
 

@@ -12,8 +12,8 @@ Start-Transcript -Path "$PSScriptRoot\Log.txt"
 
 clear
 
-Write-HostCenter "Apollo GameStream Preparation Script"
-Write-HostCenter "based on work by acceleration3, forked by Thomas Grice"
+Write-HostCenter "Sunshine GameStream Preparation Script"
+Write-HostCenter "based on work by acceleration3, forked by Tom Grice"
 Write-Host ""
 
 try {
@@ -51,9 +51,9 @@ try {
     Write-Host ""
     Write-Host "Done. You should now be able to use Moonlight after you restart your machine." -ForegroundColor DarkGreen
     Write-Host ""
-    Write-Host "Before restarting, please note your settings panel login details, shown in the Sunshine command prompt." -ForegroundColor Yellow
+    Write-Host "Do not forget to make a note of your configuration panel login details." -ForegroundColor Yellow
     Write-Host ""
-    
+
     $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower();
     if($restart -eq "y") {
         Restart-Computer -Force
