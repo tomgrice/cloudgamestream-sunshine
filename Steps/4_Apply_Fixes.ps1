@@ -13,9 +13,6 @@ if($osType.ProductType -eq 3) {
     Install-WindowsFeature -Name Wireless-Networking | Out-Null
 }
 
-Write-Host "Setting resolution to 1080p."
-Set-DisplayResolution -Width 1920 -Height 1080
-
 Write-Host "Applying resolution fix scheduled task..."
 if (!(Test-Path -Path "C:\ResFix")) {
     New-Item -Path C:\ResFix -ItemType Directory | Out-Null
@@ -23,7 +20,7 @@ if (!(Test-Path -Path "C:\ResFix")) {
     New-Item "C:\ResFix\Folder used by cloudgamestream dont delete.txt" | Out-Null
 }
 
-if (!(Get-ScheduledTask -TaskName "SetEDID")) {
+if (!(Get-ScheduledTask -TaskName "SetEDID" -ErrorAction SilentlyContinue)) {
     $action = New-ScheduledTaskAction -Execute "C:\ResFix\AtLogon.bat" -WorkingDirectory "C:\ResFix"
     $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:30"
     $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
@@ -33,4 +30,8 @@ if (!(Get-ScheduledTask -TaskName "SetEDID")) {
 Start-ScheduledTask -TaskName "SetEDID" | Out-Null
 
 Start-Sleep -Seconds 2
+
+Write-Host "Setting resolution to 1080p."
+Set-DisplayResolution -Width 1920 -Height 1080 -Force
+
 Write-Host "Resolution fix applied." -ForegroundColor Green
