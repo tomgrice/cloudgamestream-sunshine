@@ -44,7 +44,8 @@ Focus is currently being put on just AWS EC2 g4dn.xlarge instances during develo
 ## Many thanks to
 ### Installing on AWS
   [acceleration3](https://reddit.com/u/acceleration3)
+
   [TechGuru on YouTube](https://www.youtube.com/channel/UCPmCidEAN9JrG1OwahlAkIQ)
 
 ### Contact me on Reddit
-  [/u/gricey91](https://reddit.com/u/gricey91)
+  [u/gricey91](https://reddit.com/u/gricey91)
