@@ -12,6 +12,9 @@ Start-Transcript -Path "$PSScriptRoot\Log.txt"
 
 clear
 
+$WorkDir = "$PSScriptRoot\Bin"
+$SunshineDir = "$ENV:ProgramData\sunshine"
+
 Write-HostCenter "Sunshine GameStream Preparation Script"
 Write-HostCenter "based on work by acceleration3, forked by Tom Grice"
 Write-Host ""
@@ -53,6 +56,11 @@ try {
     Write-Host ""
     Write-Host "Do not forget to make a note of your configuration panel login details." -ForegroundColor Yellow
     Write-Host ""
+
+    $restart = (Read-Host "Would you like to clean up unneccesary files?").ToLower();
+    if($restart -eq "y") {
+        & $PSScriptRoot\Steps\5_Cleanup.ps1
+    }
 
     $restart = (Read-Host "Would you like to restart now? (y/n)").ToLower();
     if($restart -eq "y") {

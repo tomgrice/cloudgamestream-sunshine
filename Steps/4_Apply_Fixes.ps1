@@ -4,8 +4,6 @@ If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Break
 }
 
-$WorkDir = "$PSScriptRoot\..\Bin"
-
 $osType = Get-CimInstance -ClassName Win32_OperatingSystem
 
 if($osType.ProductType -eq 3) {

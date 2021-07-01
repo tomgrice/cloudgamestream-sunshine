@@ -6,9 +6,6 @@ If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Break
 }
 
-$WorkDir = "$PSScriptRoot\..\Bin"
-$SunshineDir = "$ENV:ProgramData\sunshine"
-
 Function Download-File([string]$Url, [string]$Path, [string]$Name) {
     try {
         if(![System.IO.File]::Exists($Path)) {
@@ -38,7 +35,7 @@ if($InstallVideo) {
 }
 if($InstallGamepad) { Download-File "https://github.com/ViGEm/ViGEmBus/releases/download/setup-v1.16.116/ViGEmBus_Setup_1.16.116.exe" "$WorkDir\ViGEmBus.exe" "ViGEmBus v1.16.116" }
 
-Write-Host "Extracting Sunshine v0.7.7..."
+Write-Host "Extracting Sunshine..."
 
 Expand-Archive -Path "$WorkDir\Sunshine-Windows.zip" -DestinationPath "$SunshineDir" -Force
 

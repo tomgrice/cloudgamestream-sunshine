@@ -4,9 +4,6 @@ If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
     Break
 }
 
-$WorkDir = "$PSScriptRoot\..\Bin\"
-$SunshineDir = "$ENV:ProgramData\sunshine"
-
 Write-Host "Enabling NVIDIA FrameBufferCopy..."
 $ExitCode = (Start-Process -FilePath "$WorkDir\NvFBCEnable.exe" -ArgumentList "-enable" -NoNewWindow -Wait -PassThru).ExitCode
 if($ExitCode -ne 0) {
@@ -60,7 +57,7 @@ $Shortcut.WorkingDirectory = $SunshineDir
 $Shortcut.IconLocation = "$WorkDir\sun.ico"
 $Shortcut.Save()
 
-$TargetFile = "$ENV:windi\explorer.exe"
+$TargetFile = "$ENV:windir\explorer.exe"
 $ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
