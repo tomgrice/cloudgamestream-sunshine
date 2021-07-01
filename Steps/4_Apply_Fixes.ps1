@@ -22,5 +22,5 @@ slmgr //B /ato
 
 Write-Host "Setting resolution to 1080p."
 displayswitch.exe /internal
-Start-Sleep -Seconds 2
+Start-Sleep -Seconds 6
 Set-DisplayResolution -Width 1920 -Height 1080 -Force
