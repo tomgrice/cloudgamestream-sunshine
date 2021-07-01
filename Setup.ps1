@@ -57,7 +57,7 @@ try {
     Write-Host "Do not forget to make a note of your configuration panel login details." -ForegroundColor Yellow
     Write-Host ""
 
-    $restart = (Read-Host "Would you like to clean up unneccesary files?").ToLower();
+    $restart = (Read-Host "Would you like to clean up unneccesary files? (y/n)").ToLower();
     if($restart -eq "y") {
         & $PSScriptRoot\Steps\5_Cleanup.ps1
     }
