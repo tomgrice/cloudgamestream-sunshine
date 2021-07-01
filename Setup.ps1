@@ -13,7 +13,7 @@ Start-Transcript -Path "$PSScriptRoot\Log.txt"
 clear
 
 $WorkDir = "$PSScriptRoot\Bin"
-$SunshineDir = "$ENV:ProgramData\sunshine"
+$SunshineDir = "$ENV:HOMEDRIVE\sunshine"
 
 Write-HostCenter "Sunshine GameStream Preparation Script"
 Write-HostCenter "based on work by acceleration3, forked by Tom Grice"

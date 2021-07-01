@@ -26,7 +26,8 @@ Write-Host "Startup task added successfully." -ForegroundColor Green
 Write-Host ""
 Write-Host "Please choose a username and pasword to configure Sunshine."
 $NewUsername = Read-Host "Username"
-$NewPassword = Read-Host "Password"
+$NewPassword = Read-Host "Password" -AsSecureString
+$NewPassword = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($NewPassword))
 
 $NewSalt = (([char[]]([char]'a'..[char]'z') + 0..9 | sort {get-random})[0..16] -join '')
 
@@ -63,7 +64,7 @@ $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
 $Shortcut.IconLocation = "$WorkDir\settings.ico"
-$Shortcut.Arguments = "https://localhost:47990"
+$Shortcut.Arguments = "https://127.0.0.1:47990"
 
 $Shortcut.Save()
 
