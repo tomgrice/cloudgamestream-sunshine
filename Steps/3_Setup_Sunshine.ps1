@@ -31,14 +31,14 @@ Write-Host "Please choose a username and pasword to configure Sunshine."
 $NewUsername = Read-Host "Username"
 $NewPassword = Read-Host "Password"
 
-$NewSalt = (([char[]]([char]'a'..[char]'Z') + 0..9 | sort {get-random})[0..16] -join '')
+$NewSalt = (([char[]]([char]'a'..[char]'z') + 0..9 | sort {get-random})[0..16] -join '')
 
 $NewHash = $NewPassword + $NewSalt
 $NewHash = new-object System.Security.Cryptography.SHA256Managed | ForEach-Object {$_.ComputeHash([System.Text.Encoding]::UTF8.GetBytes("$NewHash"))} | ForEach-Object {$_.ToString("x2")}
 [array]::Reverse($NewHash)
 $NewHash = ($NewHash -join '').ToUpper()
 
-@{username="$NewUsername";salt="$NewSalt";password="$NewHash"} | ConvertTo-Json | Out-File "$SunshineDir\sunshine_state.json"
+@{username="$NewUsername";salt="$NewSalt";password="$NewHash"} | ConvertTo-Json | Out-File "$SunshineDir\sunshine_state.json" -Encoding ascii
 
 Write-Host ""
 Write-Host "Starting Sunshine for the first time..."
@@ -49,11 +49,14 @@ Start-Process -FilePath "$SunshineDir\sunshine.exe"
 Write-Host ""
 Write-Host "Adding Desktop shortcuts" -ForegroundColor Green
 
-$TargetFile = "$SunshineDir\sunshine.exe"
+$TargetFile = "cmd.exe"
 $ShortcutFile = "$env:Public\Desktop\Start Sunshine.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
+$Shortcut.Arguments = "/c start sunshine.exe"
+$Shortcut.WorkingDirectory = $SunshineDir
+$Shortcut.IconLocation = "$ENV:windir\System32\imageres.dll,864"
 $Shortcut.Save()
 
 $TargetFile = "$ENV:windir/explorer.exe"
@@ -61,7 +64,9 @@ $ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
+$Shortcut.IconLocation = "$ENV:windir\System32\imageres.dll,1448"
 $Shortcut.Arguments = "https://localhost:47990"
+
 $Shortcut.Save()
 
 Write-Host "Adding GameStream rules to Windows Firewall..."

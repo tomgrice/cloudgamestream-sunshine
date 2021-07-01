@@ -13,25 +13,16 @@ if($osType.ProductType -eq 3) {
     Install-WindowsFeature -Name Wireless-Networking | Out-Null
 }
 
-Write-Host "Applying resolution fix scheduled task..."
-if (!(Test-Path -Path "C:\ResFix")) {
-    New-Item -Path C:\ResFix -ItemType Directory | Out-Null
-    Copy-Item "$WorkDir\ResFix\*" -Destination "C:\ResFix" -Recurse | Out-Null
-    New-Item "C:\ResFix\Folder used by cloudgamestream dont delete.txt" | Out-Null
-}
-
-if (!(Get-ScheduledTask -TaskName "SetEDID" -ErrorAction SilentlyContinue)) {
-    $action = New-ScheduledTaskAction -Execute "C:\ResFix\AtLogon.bat" -WorkingDirectory "C:\ResFix"
-    $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:30"
-    $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
-    Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "SetEDID" -Principal $principal -Description "Sets an EDID at startup" | Out-Null
-}
-
-Start-ScheduledTask -TaskName "SetEDID" | Out-Null
 
 Start-Sleep -Seconds 2
 
-Write-Host "Setting resolution to 1080p."
-Set-DisplayResolution -Width 1920 -Height 1080 -Force
+Write-Host "Applying AWS Windows Licencing fix."
+Import-Module "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Module\Ec2Launch.psd1"
+Add-Routes
+Set-ActivationSettings
+slmgr //B /ato
 
-Write-Host "Resolution fix applied." -ForegroundColor Green
+Write-Host "Setting resolution to 1080p."
+displayswitch.exe /internal
+Start-Sleep -Seconds 2
+Set-DisplayResolution -Width 1920 -Height 1080 -Force
