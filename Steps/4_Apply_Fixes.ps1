@@ -14,11 +14,13 @@ if($osType.ProductType -eq 3) {
 
 Start-Sleep -Seconds 2
 
-Write-Host "Applying AWS Windows Licencing fix."
-Import-Module "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Module\Ec2Launch.psd1"
-Add-Routes
-Set-ActivationSettings
-slmgr //B /ato
+If(Test-Path -Path "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Module\Ec2Launch.psd1" -PathType Leaf) {
+    Write-Host "Applying AWS Windows Licencing fix."
+    Import-Module "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Module\Ec2Launch.psd1"
+    Add-Routes
+    Set-ActivationSettings
+    slmgr //B /ato
+}
 
 Write-Host "Setting resolution to 1080p."
 displayswitch.exe /internal
