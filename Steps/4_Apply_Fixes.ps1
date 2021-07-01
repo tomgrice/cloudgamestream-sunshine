@@ -13,6 +13,9 @@ if($osType.ProductType -eq 3) {
     Install-WindowsFeature -Name Wireless-Networking | Out-Null
 }
 
+Write-Host "Setting resolution to 1080p."
+Set-DisplayResolution -Width 1920 -Height 1080
+
 Write-Host "Applying resolution fix scheduled task..."
 if (!(Test-Path -Path "C:\ResFix")) {
     New-Item -Path C:\ResFix -ItemType Directory | Out-Null

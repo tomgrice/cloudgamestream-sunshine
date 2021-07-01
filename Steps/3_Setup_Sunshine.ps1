@@ -5,7 +5,45 @@ If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 $WorkDir = "$PSScriptRoot\..\Bin\"
-$SunshineDir = "$ENV:HOMEDRIVE\sunshine"
+$SunshineDir = "$ENV:ProgramData\sunshine"
+
+Function Convert-ByteArrayToHex {
+
+    [cmdletbinding()]
+
+    param(
+        [parameter(Mandatory=$true)]
+        [Byte[]]
+        $Bytes
+    )
+
+    $HexString = [System.Text.StringBuilder]::new($Bytes.Length * 2)
+
+    ForEach($byte in $Bytes){
+        $HexString.AppendFormat("{0:x2}", $byte) | Out-Null
+    }
+
+    $HexString.ToString()
+}
+
+Function Convert-HexToByteArray {
+
+    [cmdletbinding()]
+
+    param(
+        [parameter(Mandatory=$true)]
+        [String]
+        $HexString
+    )
+
+    $Bytes = [byte[]]::new($HexString.Length / 2)
+
+    For($i=0; $i -lt $HexString.Length; $i+=2){
+        $Bytes[$i/2] = [convert]::ToByte($HexString.Substring($i, 2), 16)
+    }
+
+    $Bytes
+}
 
 Write-Host "Enabling NVIDIA FrameBufferCopy..."
 $ExitCode = (Start-Process -FilePath "$WorkDir\NvFBCEnable.exe" -ArgumentList "-enable" -NoNewWindow -Wait -PassThru).ExitCode
@@ -17,7 +55,7 @@ if($ExitCode -ne 0) {
 
 Write-Host "Adding startup task for Sunshine." -ForegroundColor Green
 
-if (!(Get-ScheduledTask -TaskName "StartSunshine")) {
+if (!(Get-ScheduledTask -TaskName "StartSunshine" -ErrorAction SilentlyContinue)) {
     $action = New-ScheduledTaskAction -Execute "cmd.exe" -Argument "/c start /min sunshine.exe" -WorkingDirectory "$SunshineDir"
     $trigger = New-ScheduledTaskTrigger -AtLogon -RandomDelay "00:00:20"
     $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
@@ -26,15 +64,29 @@ if (!(Get-ScheduledTask -TaskName "StartSunshine")) {
 
 Start-Sleep -Seconds 2
 Write-Host "Startup task added successfully." -ForegroundColor Green
+Write-Host ""
+Write-Host "Please choose a username and pasword to configure Sunshine."
+$NewUsername = Read-Host "Username: "
+$NewPassword = Read-Host "Password: " -MaskInput
+
+$NewSalt = (([char[]]([char]'a'..[char]'Z') + 0..9 | sort {get-random})[0..16] -join '')
+
+$NewSHA = new-object System.Security.Cryptography.SHA256Managed | ForEach-Object {$_.ComputeHash([System.Text.Encoding]::UTF8.GetBytes("$NewPassword$NewSalt"))} | ForEach-Object {$_.ToString("x2")}
+$NewByteArray = Convert-HexToByteArray $NewSHA
+[array]::Reverse($NewByteArray)
+$NewHashLower = Convert-ByteArrayToHex $NewByteArray
+$NewHash = $NewHashLower.ToUpper()
+$NewJson = ConvertTo-Json @{username="$NewUsername";salt="$NewSalt";password="$NewHash"}
+Out-File -FilePath "$SunshineDir\sunshine_state.json"
+
 
 Write-Host ""
 Write-Host "Starting Sunshine for the first time..."
 Write-Host ""
-Write-Host "You MUST make note of the username and password generated in the Sunshine application." -ForegroundColor White -BackgroundColor White
-Write-Host "You will need this to configure Sunshine. You can change these credentials later." -ForegroundColor White -BackgroundColor White
 
 Start-Process -FilePath "$SunshineDir\sunshine.exe"
 
+Write-Host ""
 Write-Host "Adding Desktop shortcuts" -ForegroundColor Green
 
 $TargetFile = "$SunshineDir\sunshine.exe"
