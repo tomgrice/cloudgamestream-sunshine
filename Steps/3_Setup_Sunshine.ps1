@@ -7,44 +7,6 @@ If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 $WorkDir = "$PSScriptRoot\..\Bin\"
 $SunshineDir = "$ENV:ProgramData\sunshine"
 
-Function Convert-ByteArrayToHex {
-
-    [cmdletbinding()]
-
-    param(
-        [parameter(Mandatory=$true)]
-        [Byte[]]
-        $Bytes
-    )
-
-    $HexString = [System.Text.StringBuilder]::new($Bytes.Length * 2)
-
-    ForEach($byte in $Bytes){
-        $HexString.AppendFormat("{0:x2}", $byte) | Out-Null
-    }
-
-    $HexString.ToString()
-}
-
-Function Convert-HexToByteArray {
-
-    [cmdletbinding()]
-
-    param(
-        [parameter(Mandatory=$true)]
-        [String]
-        $HexString
-    )
-
-    $Bytes = [byte[]]::new($HexString.Length / 2)
-
-    For($i=0; $i -lt $HexString.Length; $i+=2){
-        $Bytes[$i/2] = [convert]::ToByte($HexString.Substring($i, 2), 16)
-    }
-
-    $Bytes
-}
-
 Write-Host "Enabling NVIDIA FrameBufferCopy..."
 $ExitCode = (Start-Process -FilePath "$WorkDir\NvFBCEnable.exe" -ArgumentList "-enable" -NoNewWindow -Wait -PassThru).ExitCode
 if($ExitCode -ne 0) {
@@ -66,19 +28,17 @@ Start-Sleep -Seconds 2
 Write-Host "Startup task added successfully." -ForegroundColor Green
 Write-Host ""
 Write-Host "Please choose a username and pasword to configure Sunshine."
-$NewUsername = Read-Host "Username: "
-$NewPassword = Read-Host "Password: " -MaskInput
+$NewUsername = Read-Host "Username"
+$NewPassword = Read-Host "Password"
 
 $NewSalt = (([char[]]([char]'a'..[char]'Z') + 0..9 | sort {get-random})[0..16] -join '')
 
-$NewSHA = new-object System.Security.Cryptography.SHA256Managed | ForEach-Object {$_.ComputeHash([System.Text.Encoding]::UTF8.GetBytes("$NewPassword$NewSalt"))} | ForEach-Object {$_.ToString("x2")}
-$NewByteArray = Convert-HexToByteArray $NewSHA
-[array]::Reverse($NewByteArray)
-$NewHashLower = Convert-ByteArrayToHex $NewByteArray
-$NewHash = $NewHashLower.ToUpper()
-$NewJson = ConvertTo-Json @{username="$NewUsername";salt="$NewSalt";password="$NewHash"}
-Out-File -FilePath "$SunshineDir\sunshine_state.json"
+$NewHash = $NewPassword + $NewSalt
+$NewHash = new-object System.Security.Cryptography.SHA256Managed | ForEach-Object {$_.ComputeHash([System.Text.Encoding]::UTF8.GetBytes("$NewHash"))} | ForEach-Object {$_.ToString("x2")}
+[array]::Reverse($NewHash)
+$NewHash = ($NewHash -join '').ToUpper()
 
+@{username="$NewUsername";salt="$NewSalt";password="$NewHash"} | ConvertTo-Json | Out-File "$SunshineDir\sunshine_state.json"
 
 Write-Host ""
 Write-Host "Starting Sunshine for the first time..."
