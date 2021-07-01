@@ -1,5 +1,2 @@
 .vscode
 .git
-ResFix_src/nvapi/*
-!ResFix_src/nvapi/nvapi_info.txt
-ResFix_src/build

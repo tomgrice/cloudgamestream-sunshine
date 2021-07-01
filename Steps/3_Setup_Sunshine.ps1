@@ -48,7 +48,8 @@ Start-Process -FilePath "$SunshineDir\sunshine.exe"
 
 Write-Host ""
 Write-Host "Adding Desktop shortcuts" -ForegroundColor Green
-
+Copy-Item "$WorkDir\settings.ico" -Destination "$SunshineDir"
+Copy-Item "$WorkDir\sun.ico" -Destination "$SunshineDir"
 $TargetFile = "cmd.exe"
 $ShortcutFile = "$env:Public\Desktop\Start Sunshine.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
@@ -56,15 +57,15 @@ $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
 $Shortcut.Arguments = "/c start sunshine.exe"
 $Shortcut.WorkingDirectory = $SunshineDir
-$Shortcut.IconLocation = "$ENV:windir\System32\imageres.dll,864"
+$Shortcut.IconLocation = "$WorkDir\sun.ico"
 $Shortcut.Save()
 
-$TargetFile = "$ENV:windir/explorer.exe"
+$TargetFile = "$ENV:windi\explorer.exe"
 $ShortcutFile = "$env:Public\Desktop\Sunshine Settings.lnk"
 $WScriptShell = New-Object -ComObject WScript.Shell
 $Shortcut = $WScriptShell.CreateShortcut($ShortcutFile)
 $Shortcut.TargetPath = $TargetFile
-$Shortcut.IconLocation = "$ENV:windir\System32\imageres.dll,1448"
+$Shortcut.IconLocation = "$WorkDir\settings.ico"
 $Shortcut.Arguments = "https://localhost:47990"
 
 $Shortcut.Save()

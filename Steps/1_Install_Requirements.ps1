@@ -26,7 +26,7 @@ $InstallAudio = (Read-Host "You need to have an audio interface installed for Ga
 $InstallVideo = (Read-Host "You also need the NVIDIA vGaming Drivers installed. Installing will reboot your machine. Install the tested and recommended ones? (y/n)").ToLower() -eq "y"
 $InstallGamepad = (Read-Host "Would you like to install ViGEmBus for gamepad and controller support? (y/n)").ToLower() -eq "y"
 
-Download-File "https://github.com/loki-47-6F-64/sunshine/releases/download/v0.7.7/Sunshine-Windows.zip" "$WorkDir\Sunshine-Windows.zip" "Sunshine Moonlight Host v0.7.7"
+Download-File "https://github.com/loki-47-6F-64/sunshine/releases/download/v0.8.0/Sunshine-Windows.zip" "$WorkDir\Sunshine-Windows.zip" "Sunshine Moonlight Host v0.8.0"
 Download-File "https://aka.ms/vs/16/release/vc_redist.x86.exe" "$WorkDir\redist_x86.exe" "Visual C++ Redist 2015-19 x86"
 if($ENV:PROCESSOR_ARCHITECTURE -eq 'AMD64') { Download-File "https://aka.ms/vs/16/release/vc_redist.x64.exe" "$WorkDir\redist_x64.exe" "Visual C++ Redist 2015-19 x64" }
 if($InstallAudio) { Download-File "https://download.vb-audio.com/Download_CABLE/VBCABLE_Driver_Pack43.zip" "$WorkDir\vbcable.zip" "VBCABLE" }
