@@ -31,7 +31,8 @@ if($InstallVideo) {
     $WebContent = Invoke-WebRequest -Uri 'https://nvidia-gaming.s3.amazonaws.com/?list-type=2&prefix=windows/latest&encoding-type=url&max-keys=1&start-after=windows/latest/'
     [xml]$xmlVideoDriverS3 = $WebContent.Content
     $VideoDriverURL = "https://nvidia-gaming.s3.amazonaws.com/" + $xmlVideoDriverS3.ListBucketResult.Contents.Key
-    Download-File "$VideoDriverURL" "$WorkDir\Drivers.zip" "NVIDIA vGaming Drivers"
+    $VideoDriverFileName = ([uri]$VideoDriverURL).Segments[-1]
+    Download-File "$VideoDriverURL" "$WorkDir\$VideoDriverFileName" "NVIDIA vGaming Drivers"
 }
 if($InstallGamepad) { Download-File "https://github.com/ViGEm/ViGEmBus/releases/download/setup-v1.16.116/ViGEmBus_Setup_1.16.116.exe" "$WorkDir\ViGEmBus.exe" "ViGEmBus v1.16.116" }
 
@@ -88,8 +89,15 @@ if($InstallVideo) {
         $principal = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
         Register-ScheduledTask -Action $action -Trigger $trigger -Principal $principal -TaskName "GSSetup" -Description "GSSetup" | Out-Null
     }
-    Expand-Archive -Path "$WorkDir\Drivers.zip" -DestinationPath "$WorkDir\Drivers"
-    $InstallPath = Resolve-Path "$WorkDir\Drivers\Windows\*server2019_64bit_international.exe"
+    $VideoDriverFileExt = (Split-Path -Path $VideoDriverFileName -Leaf).Split(".")[-1] 
+    if($VideoDriverFileExt -eq 'ZIP'){
+        Expand-Archive -Path "$WorkDir\$VideoDriverFileName" -DestinationPath "$WorkDir\Drivers"
+        $InstallPath = Resolve-Path "$WorkDir\Drivers\Windows\*server2019_64bit_international.exe"
+    }
+    else{
+        $InstallPath =  "$WorkDir\$VideoDriverFileName"
+    }
+ 
     Write-Host "Installing NVIDIA vGaming drivers. This may take a while..." -ForegroundColor Green
     $ExitCode = (Start-Process -FilePath "$InstallPath" -ArgumentList "/s","/clean" -NoNewWindow -Wait -PassThru).ExitCode
     if($ExitCode -eq 0) {
