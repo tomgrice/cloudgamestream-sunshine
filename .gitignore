@@ -1,3 +1,6 @@
 .vscode
 .git
 Log.txt
+
+Bin/*.exe
+Bin/*.zip
